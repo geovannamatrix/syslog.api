@@ -3,9 +3,12 @@ package com.syslog.api.service;
 import com.syslog.api.exception.BadRequestException;
 import com.syslog.api.model.dtos.UserRequestDTO;
 import com.syslog.api.model.dtos.UserResponseDTO;
+import com.syslog.api.model.dtos.UserUpdateRequestDTO;
 import com.syslog.api.model.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.syslog.api.model.mapper.UserMapper.USER_MAPPER;
 
@@ -16,6 +19,7 @@ public class UserService {
     private final EncryptPasswordService encryptPasswordService;
     private final UserRepository repository;
 
+    @Transactional
     public UserResponseDTO createUser(UserRequestDTO request) {
         validateEmail(request.getEmail().toLowerCase());
         return save(request);
@@ -39,11 +43,17 @@ public class UserService {
         var password = encryptPasswordService.encryptPassword(request.getPassword());
         request.setPassword(password);
         var user = USER_MAPPER.toEntity(request);
-        var userId = repository.insertAndReturnId(user);
+        Long userId;
+        try {
+            userId = repository.insertAndReturnId(user);
+        } catch (DuplicateKeyException exception) {
+            throw new BadRequestException("Sent Email already has a registered password");
+        }
         return new UserResponseDTO(userId);
     }
 
-    public void updateUser(String email, UserRequestDTO request) {
+    @Transactional
+    public void updateUser(String email, UserUpdateRequestDTO request) {
         var user = repository.findByEmail(email);
         if (user.isEmpty()) {
             throw new BadRequestException("User not registered");
@@ -70,6 +80,7 @@ public class UserService {
         return encryptPasswordService.encryptPassword(password);
     }
 
+    @Transactional
     public void deleteUser(Long id) {
         var user = repository.findById(id);
         if (user.isEmpty()) {

@@ -10,10 +10,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping(value = "api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
 public class UserController {
 
@@ -34,7 +36,7 @@ public class UserController {
             "User"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Updated the user")})
-    public ResponseEntity<AuthResponseDTO<Void>> update(@PathVariable String email, @Valid @RequestBody UserRequestDTO request) {
+    public ResponseEntity<AuthResponseDTO<Void>> update(@PathVariable String email, @Valid @RequestBody UserUpdateRequestDTO request) {
         userService.updateUser(email, request);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -44,7 +46,7 @@ public class UserController {
             "User"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Deleted the user")})
-    public ResponseEntity<AuthResponseDTO<Void>> delete(Long id) {
+    public ResponseEntity<AuthResponseDTO<Void>> delete(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

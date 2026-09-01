@@ -37,20 +37,20 @@ public class UserRepository {
                 """, MAPPER, id).stream().findFirst();
     }
 
-    public void insert(User user) {
-        jdbc.queryForObject("""
-                INSERT INTO user_entity (email, username, password, updated_at)
-                VALUES (?, ?, ?, current_timestamp)
-                RETURNING id
-                """, Long.class, user.getEmail(), user.getUsername(), user.getPassword());
-    }
-
     public Long insertAndReturnId(User user) {
         return jdbc.queryForObject("""
                 INSERT INTO user_entity (email, username, password, updated_at)
                 VALUES (?, ?, ?, current_timestamp)
                 RETURNING id
                 """, Long.class, user.getEmail(), user.getUsername(), user.getPassword());
+    }
+
+    public int updatePassword(Long id, String password) {
+        return jdbc.update("""
+                UPDATE user_entity
+                SET password = ?, updated_at = current_timestamp
+                WHERE id = ?
+                """, password, id);
     }
 
     public int updateUser(User user) {

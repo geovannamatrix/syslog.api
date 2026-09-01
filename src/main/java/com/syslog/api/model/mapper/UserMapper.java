@@ -2,6 +2,7 @@ package com.syslog.api.model.mapper;
 
 import com.syslog.api.model.dtos.CredentialDTO;
 import com.syslog.api.model.dtos.UserRequestDTO;
+import com.syslog.api.model.dtos.UserUpdateRequestDTO;
 import com.syslog.api.model.entity.User;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
@@ -22,4 +23,7 @@ public interface UserMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     User toUpdateEntity(@MappingTarget User user, UserRequestDTO request);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    User toUpdateEntity(@MappingTarget User user, UserUpdateRequestDTO request);
 }
