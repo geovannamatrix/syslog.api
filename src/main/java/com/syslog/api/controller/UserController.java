@@ -3,6 +3,7 @@ package com.syslog.api.controller;
 import com.syslog.api.model.dtos.AuthResponseDTO;
 import com.syslog.api.model.dtos.UserRequestDTO;
 import com.syslog.api.model.dtos.UserResponseDTO;
+import com.syslog.api.model.dtos.UserUpdateRequestDTO;
 import com.syslog.api.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

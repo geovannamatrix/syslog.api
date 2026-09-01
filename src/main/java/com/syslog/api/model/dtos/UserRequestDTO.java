@@ -10,6 +10,10 @@ import jakarta.validation.constraints.Size;
 @Schema(description = "DTO for user request")
 public class UserRequestDTO {
 
+    @Schema(description = "User name for registration")
+    @NotBlank
+    private String name;
+
     @Schema(description = "User email for registration")
     @NotBlank
     @Email

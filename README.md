@@ -83,6 +83,7 @@ Tabela `user_entity` (`src/main/resources/db/migration/V1__create_user.sql`):
 | Coluna | Tipo | Observação |
 |---|---|---|
 | `id` | `BIGSERIAL` | chave primária |
+| `name` | `TEXT NOT NULL` | nome do usuário |
 | `email` | `TEXT NOT NULL` | índice único `ux_user_entity_email` |
 | `username` | `TEXT NOT NULL` | login de exibição |
 | `password` | `TEXT NOT NULL` | hash, nunca a senha em claro |
@@ -100,17 +101,18 @@ Base: `http://localhost:8080`
 
 | Método | Rota | Descrição | Sucesso |
 |---|---|---|---|
-| `POST` | `/` | Cria um usuário | `201 Created` |
-| `PATCH` | `/{email}` | Atualiza os dados do usuário identificado pelo e-mail | `200 OK` |
-| `DELETE` | `/{id}` | Exclui o usuário pelo id | `204 No Content` |
+| `POST` | `/api/v1/users` | Cria um usuário | `201 Created` |
+| `PATCH` | `/api/v1/users/{email}` | Atualiza os dados do usuário identificado pelo e-mail | `200 OK` |
+| `DELETE` | `/api/v1/users/{id}` | Exclui o usuário pelo id | `204 No Content` |
 
 **Criar usuário**
 
 ```http
-POST /
+POST /api/v1/users
 Content-Type: application/json
 
 {
+  "name": "Geovanna Duarte",
   "email": "geovanna@example.com",
   "username": "geovanna",
   "password": "senha-super-secreta"
@@ -129,7 +131,7 @@ Recusa com `400` se o e-mail já estiver cadastrado (`Sent Email already has a r
 **Atualizar usuário** — atualização parcial: envie apenas os campos que mudam. Se `password` vier preenchido, ele é re-hasheado; se vier nulo ou vazio, a senha atual é preservada.
 
 ```http
-PATCH /geovanna@example.com
+PATCH /api/v1/users/geovanna@example.com
 Content-Type: application/json
 
 { "username": "geovanna.duarte" }
@@ -138,7 +140,7 @@ Content-Type: application/json
 **Excluir usuário**
 
 ```http
-DELETE /1
+DELETE /api/v1/users/1
 ```
 
 ### Credencial
@@ -218,6 +220,8 @@ docker compose up database
 
 Fora do Compose, os defaults do `application.yml` apontam para `localhost:5432`, então nenhuma variável precisa ser definida.
 
+Se uma execução anterior malsucedida deixou um volume do PostgreSQL, execute `docker compose down -v` antes de subir novamente para que a migration V1 corrigida seja aplicada.
+
 ### Build e testes
 
 ```bash
@@ -226,7 +230,7 @@ Fora do Compose, os defaults do `application.yml` apontam para `localhost:5432`,
 java -jar target/*.jar
 ```
 
-O `DockerFile` é multi-stage: o primeiro estágio (`amazoncorretto:21-alpine3.18-jdk` + Maven) compila e empacota, e o segundo (`amazoncorretto:21-alpine3.18`, só JRE) carrega apenas o `application.jar`. O `pom.xml` é copiado antes do `src` para que o download das dependências fique em cache entre builds.
+O `Dockerfile` é multi-stage: o primeiro estágio (`amazoncorretto:21-alpine3.18-jdk` + Maven) compila e empacota, e o segundo (`amazoncorretto:21-alpine3.18`, só JRE) carrega apenas o `application.jar`. O `pom.xml` é copiado antes do `src` para que o download das dependências fique em cache entre builds.
 
 ---
 
@@ -264,7 +268,7 @@ Os controllers e DTOs estão anotados com `@Operation`, `@ApiResponses` e `@Sche
 
 ```
 .
-├── DockerFile                        # build multi-stage da imagem da API
+├── Dockerfile                        # build multi-stage da imagem da API
 ├── docker-compose.yml                # API + PostgreSQL
 ├── pom.xml
 └── src
@@ -292,5 +296,5 @@ Os controllers e DTOs estão anotados com `@Operation`, `@ApiResponses` e `@Sche
 
 Itens que ainda divergem do comportamento esperado:
 
-7. **Cadastro sem o campo `name`**: a tabela e os DTOs têm `username`, mas não o nome do usuário.
-12. **Sem cobertura de testes**: existe apenas o `ApplicationTests` gerado pelo Spring Initializr.
+1. **Sem cobertura de testes**: existe apenas o `ApplicationTests` gerado pelo Spring Initializr.
+2. **Defaults do Swagger apontam para um contexto inexistente**: os valores `SWAGGER_CONFIG_URL`, `SWAGGER_URL` e `SWAGGER_API_URL` usam o contexto `/api`, mas não há `server.servlet.context-path` configurado em `application.yml`.

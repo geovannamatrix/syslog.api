@@ -9,6 +9,9 @@ import lombok.Data;
 @Schema(description = "DTO for user update request")
 public class UserUpdateRequestDTO {
 
+    @Schema(description = "User name for update")
+    private String name;
+
     @Schema(description = "User email for update")
     @Email
     private String email;

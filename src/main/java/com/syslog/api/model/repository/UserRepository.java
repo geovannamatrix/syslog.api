@@ -16,6 +16,7 @@ public class UserRepository {
 
     private static final RowMapper<User> MAPPER = (rs, rowNum) -> new User(
             rs.getLong("id"),
+            rs.getString("name"),
             rs.getString("email"),
             rs.getString("username"),
             rs.getString("password"),
@@ -23,7 +24,7 @@ public class UserRepository {
 
     public Optional<User> findByEmail(String email) {
         return jdbc.query("""
-                SELECT id, email, username, password, updated_at
+                SELECT id, name, email, username, password, updated_at
                 FROM user_entity
                 WHERE email = ?
                 """, MAPPER, email).stream().findFirst();
@@ -31,7 +32,7 @@ public class UserRepository {
 
     public Optional<User> findById(Long id) {
         return jdbc.query("""
-                SELECT id, email, username, password, updated_at
+                SELECT id, name, email, username, password, updated_at
                 FROM user_entity
                 WHERE id = ?
                 """, MAPPER, id).stream().findFirst();
@@ -39,10 +40,10 @@ public class UserRepository {
 
     public Long insertAndReturnId(User user) {
         return jdbc.queryForObject("""
-                INSERT INTO user_entity (email, username, password, updated_at)
-                VALUES (?, ?, ?, current_timestamp)
+                INSERT INTO user_entity (name, email, username, password, updated_at)
+                VALUES (?, ?, ?, ?, current_timestamp)
                 RETURNING id
-                """, Long.class, user.getEmail(), user.getUsername(), user.getPassword());
+                """, Long.class, user.getName(), user.getEmail(), user.getUsername(), user.getPassword());
     }
 
     public int updatePassword(Long id, String password) {
@@ -56,9 +57,9 @@ public class UserRepository {
     public int updateUser(User user) {
         return jdbc.update("""
                 UPDATE user_entity
-                SET email = ?, username = ?, password = ?, updated_at = current_timestamp
+                SET name = ?, email = ?, username = ?, password = ?, updated_at = current_timestamp
                 WHERE id = ?
-                """, user.getEmail(), user.getUsername(), user.getPassword(), user.getId());
+                """, user.getName(), user.getEmail(), user.getUsername(), user.getPassword(), user.getId());
     }
 
     public void delete(Long id) {
