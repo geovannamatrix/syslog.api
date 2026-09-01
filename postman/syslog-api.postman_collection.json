@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "a6e74f33-55a9-46a3-b850-9d59c29c899b",
     "name": "SYSLOG API",
-    "description": "Execute manually in this order: create user → login → change password → login with the new password → PATCH user → DELETE user.",
+    "description": "Colecao de testes manuais da SYSLOG API. As pastas estao numeradas na ordem de execucao: criar usuario -> login -> trocar senha -> login com a nova senha -> PATCH parcial -> DELETE. O DELETE fica em uma pasta separada para que a colecao inteira possa ser executada de uma vez (Runner ou newman) sem excluir o usuario antes dos testes de credencial. Selecione o ambiente 'SYSLOG API Local' antes de rodar.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -29,7 +29,7 @@
   ],
   "item": [
     {
-      "name": "User",
+      "name": "1. User - cadastro e atualizacao",
       "item": [
         {
           "name": "Create user",
@@ -122,7 +122,7 @@
       ]
     },
     {
-      "name": "Credential",
+      "name": "2. Credential - login e troca de senha",
       "item": [
         {
           "name": "Login",
@@ -252,7 +252,12 @@
               }
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "name": "3. User - exclusao",
+      "item": [
         {
           "name": "Delete user",
           "request": {

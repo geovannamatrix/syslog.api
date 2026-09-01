@@ -266,7 +266,15 @@ Os controllers e DTOs estão anotados com `@Operation`, `@ApiResponses` e `@Sche
 
 ## Collection Postman
 
-Os arquivos `postman/syslog-api.postman_collection.json` e `postman/syslog-api.postman_environment.json` podem ser importados no Postman. Selecione o ambiente **SYSLOG API Local** e execute as requisições na ordem: criar usuário, login, trocar senha, login com a nova senha, atualizar parcialmente o usuário e excluir o usuário.
+Os arquivos `postman/syslog-api.postman_collection.json` e `postman/syslog-api.postman_environment.json` podem ser importados no Postman. Selecione o ambiente **SYSLOG API Local** (variáveis `baseUrl`, `userEmail`, `userPassword`, `newPassword`).
+
+As pastas estão numeradas na ordem de execução — cadastro e atualização, login e troca de senha, exclusão —, então a collection inteira pode ser executada de uma vez pelo Runner do Postman ou por linha de comando:
+
+```bash
+newman run postman/syslog-api.postman_collection.json -e postman/syslog-api.postman_environment.json
+```
+
+O `userId` usado no `DELETE` é preenchido automaticamente pelo teste do cadastro.
 
 ---
 
