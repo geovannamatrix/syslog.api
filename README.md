@@ -16,6 +16,7 @@ O acesso ao banco é feito com **JDBC puro** (`JdbcTemplate` + SQL escrito à m�
 - [Como rodar](#como-rodar)
 - [Configuração](#configuração)
 - [Documentação interativa (Swagger)](#documentação-interativa-swagger)
+- [Collection Postman](#collection-postman)
 - [Estrutura de pastas](#estrutura-de-pastas)
 
 ---
@@ -242,9 +243,9 @@ Tudo em `src/main/resources/application.yml`, sem profiles. As variáveis de amb
 | `SPRING_DATASOURCE_URL` | `jdbc:postgresql://localhost:5432/postgres` | JDBC URL (no Compose: host `database`) |
 | `SPRING_DATASOURCE_USERNAME` | `postgres` | usuário do banco |
 | `SPRING_DATASOURCE_PASSWORD` | `password` | senha do banco |
-| `SWAGGER_CONFIG_URL` | `/api/v3/api-docs/swagger-config` | config do Swagger UI |
-| `SWAGGER_URL` | `/api/v3/api-docs` | documento OpenAPI |
-| `SWAGGER_API_URL` | `http://localhost:8080/api` | URL base exibida no Swagger |
+| `SWAGGER_CONFIG_URL` | `/v3/api-docs/swagger-config` | config do Swagger UI |
+| `SWAGGER_URL` | `/v3/api-docs` | documento OpenAPI |
+| `SWAGGER_SERVER_URL` | `http://localhost:8080` | servidor exibido no Swagger |
 
 Outros ajustes relevantes: pool Hikari limitado a 5 conexões, Flyway lendo de `classpath:db/migration` e log em `DEBUG` para `org.springframework.jdbc.core` (imprime o SQL executado — útil por o SQL ser escrito à mão, mas deve ser reduzido para `INFO` em produção).
 
@@ -260,6 +261,12 @@ Com a aplicação no ar:
 - OpenAPI JSON: <http://localhost:8080/v3/api-docs>
 
 Os controllers e DTOs estão anotados com `@Operation`, `@ApiResponses` e `@Schema`, então a documentação reflete as rotas e os contratos reais.
+
+---
+
+## Collection Postman
+
+Os arquivos `postman/syslog-api.postman_collection.json` e `postman/syslog-api.postman_environment.json` podem ser importados no Postman. Selecione o ambiente **SYSLOG API Local** e execute as requisições na ordem: criar usuário, login, trocar senha, login com a nova senha, atualizar parcialmente o usuário e excluir o usuário.
 
 ---
 
