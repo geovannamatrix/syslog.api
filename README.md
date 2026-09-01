@@ -17,7 +17,6 @@ O acesso ao banco é feito com **JDBC puro** (`JdbcTemplate` + SQL escrito à m�
 - [Configuração](#configuração)
 - [Documentação interativa (Swagger)](#documentação-interativa-swagger)
 - [Estrutura de pastas](#estrutura-de-pastas)
-- [Pendências conhecidas](#pendências-conhecidas)
 
 ---
 
@@ -289,12 +288,3 @@ Os controllers e DTOs estão anotados com `@Operation`, `@ApiResponses` e `@Sche
     │       └── db/migration/V1__create_user.sql
     └── test/java/com/syslog/api/ApplicationTests.java
 ```
-
----
-
-## Pendências conhecidas
-
-Itens que ainda divergem do comportamento esperado:
-
-1. **Sem cobertura de testes**: existe apenas o `ApplicationTests` gerado pelo Spring Initializr.
-2. **Defaults do Swagger apontam para um contexto inexistente**: os valores `SWAGGER_CONFIG_URL`, `SWAGGER_URL` e `SWAGGER_API_URL` usam o contexto `/api`, mas não há `server.servlet.context-path` configurado em `application.yml`.
