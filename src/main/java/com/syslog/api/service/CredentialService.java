@@ -8,6 +8,7 @@ import com.syslog.api.model.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.syslog.api.model.mapper.UserMapper.USER_MAPPER;
 
@@ -29,6 +30,7 @@ public class CredentialService {
         return encryptPasswordService.isPasswordValid(credential.getPassword(), password);
     }
 
+    @Transactional
     public void changePassword(String email, ChangePasswordRequestDTO request) {
         CredentialDTO credential = validateEmailOnDatabase(email);
         if (!isChangePasswordRequestValid(credential, request.getPassword())) {
@@ -55,7 +57,6 @@ public class CredentialService {
 
     public void updatePassword(CredentialDTO credential, String newPassword) {
         credential.setPassword(encryptPasswordService.encryptPassword(newPassword));
-        var credentialSaved = USER_MAPPER.toEntity(credential);
-        repository.insert(credentialSaved);
+        repository.updatePassword(credential.getId(), credential.getPassword());
     }
 }

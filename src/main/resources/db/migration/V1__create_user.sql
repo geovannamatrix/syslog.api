@@ -1,5 +1,6 @@
 CREATE TABLE user_entity (
-    id         BIG-SERIAL PRIMARY KEY,
+    id         BIGSERIAL PRIMARY KEY,
+    name       TEXT NOT NULL,
     email      TEXT NOT NULL,
     username   TEXT NOT NULL,
     password   TEXT NOT NULL,
