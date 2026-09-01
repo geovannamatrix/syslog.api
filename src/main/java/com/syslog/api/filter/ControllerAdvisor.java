@@ -1,9 +1,9 @@
-package org.emporio.sabor.real.api.filter;
+package com.syslog.api.filter;
 
+import com.syslog.api.exception.BadRequestException;
+import com.syslog.api.exception.ExternalServerErrorException;
+import com.syslog.api.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import org.emporio.sabor.real.api.exception.BadRequestException;
-import org.emporio.sabor.real.api.exception.ExternalServerErrorException;
-import org.emporio.sabor.real.api.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

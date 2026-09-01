@@ -1,7 +1,80 @@
 package com.syslog.api.service;
 
+import com.syslog.api.exception.BadRequestException;
+import com.syslog.api.model.dtos.UserRequestDTO;
+import com.syslog.api.model.dtos.UserResponseDTO;
+import com.syslog.api.model.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static com.syslog.api.model.mapper.UserMapper.USER_MAPPER;
+
 @Service
+@AllArgsConstructor
 public class UserService {
+
+    private final EncryptPasswordService encryptPasswordService;
+    private final UserRepository repository;
+
+    public UserResponseDTO createUser(UserRequestDTO request) {
+        validateEmail(request.getEmail().toLowerCase());
+        return save(request);
+    }
+
+    public void validateEmail(String email) {
+        validateEmailDoesNotExistsOnDatabase(email);
+    }
+
+    public void validateEmailDoesNotExistsOnDatabase(String email) {
+        if (isEmailOnDatabase(email)) {
+            throw new BadRequestException("Sent Email already has a registered password");
+        }
+    }
+
+    public boolean isEmailOnDatabase(String email) {
+        return repository.findByEmail(email).isPresent();
+    }
+
+    public UserResponseDTO save(UserRequestDTO request) {
+        var password = encryptPasswordService.encryptPassword(request.getPassword());
+        request.setPassword(password);
+        var user = USER_MAPPER.toEntity(request);
+        var userId = repository.insertAndReturnId(user);
+        return new UserResponseDTO(userId);
+    }
+
+    public void updateUser(String email, UserRequestDTO request) {
+        var user = repository.findByEmail(email);
+        if (user.isEmpty()) {
+            throw new BadRequestException("User not registered");
+        }
+
+        var password = validatePasswordToUpdate(request.getPassword());
+        request.setPassword(password);
+        var userUpdate = USER_MAPPER.toUpdateEntity(user.get(), request);
+
+        repository.updateUser(userUpdate);
+    }
+
+    private String validatePasswordToUpdate(String password) {
+        if (password != null && !password.isEmpty()) {
+            password = encryptPassword(password);
+        }
+        return password;
+    }
+
+    private String encryptPassword(String password) {
+        if (password == null || password.isEmpty()) {
+            throw new BadRequestException("Password cannot be null or empty");
+        }
+        return encryptPasswordService.encryptPassword(password);
+    }
+
+    public void deleteUser(Long id) {
+        var user = repository.findById(id);
+        if (user.isEmpty()) {
+            throw new BadRequestException("User not found");
+        }
+        repository.delete(id);
+    }
 }

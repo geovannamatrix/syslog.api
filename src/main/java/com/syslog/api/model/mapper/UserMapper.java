@@ -10,9 +10,9 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
-public interface CredentialMapper {
+public interface UserMapper {
 
-    CredentialMapper CREDENTIAL_MAPPER = Mappers.getMapper(CredentialMapper.class);
+    UserMapper USER_MAPPER = Mappers.getMapper(UserMapper.class);
 
     User toEntity(CredentialDTO credential);
 

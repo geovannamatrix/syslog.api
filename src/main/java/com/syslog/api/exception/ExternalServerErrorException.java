@@ -1,4 +1,4 @@
-package org.emporio.sabor.real.api.exception;
+package com.syslog.api.exception;
 
 public class ExternalServerErrorException extends RuntimeException {
 
